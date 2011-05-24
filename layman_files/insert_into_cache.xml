@@ -1,0 +1,10 @@
+  <repo quality="experimental" status="unofficial">
+    <name><![CDATA[bumblebee]]></name>
+    <description><![CDATA[overlay for using bumblebee on gentoo]]></description>
+    <homepage>https://github.com/iegor/bumblebee-Gentoo-support</homepage>
+    <owner>
+      <email>mj@casalogic.dk</email>
+      <name><![CDATA[Martin Juhl]]></name>
+    </owner>
+    <source type="git">git://github.com/iegor/bumblebee-Gentoo-support.git</source>
+  </repo>
