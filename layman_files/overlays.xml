@@ -1,8 +1,11 @@
-<repo priority="50" quality="experimental" status="unofficial">
-	<name>bumblebee</name>
-	<homepage>http://www.martin-juhl.dk</homepage>
-	<owner>
-		<email>haventfound@mail.com</email>
-		<name>Martin Juhl</name>
-	</owner>
-</repo>
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories version="1.0">
+	<repo priority="50" quality="experimental" status="unofficial">
+		<name>bumblebee</name>
+		<homepage>git://github.com/iegor/bumblebee-Gentoo-support.git</homepage>
+		<owner>
+			<email>haventfound@mail.com</email>
+			<name>Martin Juhl</name>
+		</owner>
+	</repo>
+</repositories>

@@ -5,7 +5,7 @@
 EAPI="4"
 
 DESCRIPTION="Bumblebee, the right hand of Optimus-Prime :)"
-HOMEPAGE="https://github.com/MrMEEE/bumblebee"
+HOMEPAGE="git://github.com/iegor/bumblebee-Gentoo-support.git"
 LICENSE="BEER-WARE"
 CATEGORY="app-misc"
 
@@ -15,8 +15,10 @@ IUSE="nvidia"
 
 MERGE_TYPE="binary"
 
-RDEPEND="x11-drivers/nvidia-drivers"
-DEPEND="${RDEPEND}"
+DEPEND="x11-drivers/nvidia-drivers
+	x11-apps/mesa-progs
+	sys-libs/libselinux"
+RDEPEND="${DEPEND}"
 
 # SRC_URI="./bumblebee-1.1.2.tar.gz"
 
