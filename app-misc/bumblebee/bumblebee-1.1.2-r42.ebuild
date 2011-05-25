@@ -16,8 +16,8 @@ IUSE="nvidia"
 MERGE_TYPE="binary"
 
 DEPEND="x11-drivers/nvidia-drivers
-	x11-apps/mesa-progs
-	sys-libs/libselinux"
+	x11-apps/mesa-progs"
+#	sys-libs/libselinux"
 RDEPEND="${DEPEND}"
 
 # SRC_URI="./bumblebee-1.1.2.tar.gz"
