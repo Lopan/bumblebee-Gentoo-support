@@ -44,19 +44,24 @@ depend() {
 	provide ${DAEMON}
 }
 
-checkconfig() {
-	ebegin "${DAEMON} exist and is and executable"
-	test -x ${DAEMON}
-	eend ${?}
-	[ ${?} = 0 ] || return 1;
-
-	return 0;
-}
+#checkconfig() {
+#	ebegin "${DAEMON} exist and is and executable"
+#	test -x ${DAEMON}
+#	eend ${?}
+#	[ ${?} = 0 ] || return 1;
+#
+#	return 0;
+#}
 
 start() {
-	# [ checkconfig = 0 ] || return 1;
-
 	ebegin "Starting X display manager xdm-optimus"
+
+	# [ checkconfig = 0 ] || return 1;
+	if [ -f ${PIDFILE} ]; then
+		ewarn "Already running"
+		return 1
+	fi
+	
 	LD_LIBRARY_PATH=/usr/lib64/
 	start-stop-daemon --start --quiet $SSD_START_ARGS -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
 	eend ${?}
@@ -66,7 +71,7 @@ start() {
 stop() {
 	ebegin "Stopping X display manager"
 
-	if ! [ ${PIDFILE} ]; then
+	if ! [ -f ${PIDFILE} ]; then
 		ewarn "Not running ($PIDFILE not found)"
 	else
 		start-stop-daemon --stop --quiet $SSD_STOP_ARGS
@@ -81,4 +86,5 @@ stop() {
 	fi
 
 	eend ${?}
+	return 0
 }

@@ -26,6 +26,9 @@ fi
 
 # start some nice programs
 
-/usr/bin/uxterm
-# vglrun -ld /usr/lib/nvidia-current -d :1 /usr/bin/uxterm -bg grey -fn 7x14 -maximized
-# vglrun -ld /usr/lib/nvidia-current -d :1 
+# export LD_PRELOAD=/usr/lib64/.so
+
+# optirun64 glxgears
+#/usr/bin/uxterm
+# vglrun -ld /usr/lib/ -d :1 /usr/bin/uxterm -bg grey -fn 7x14 -maximized
+vglrun -ld /usr/lib/ -d :1  glxgears
