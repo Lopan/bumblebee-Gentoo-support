@@ -270,13 +270,13 @@ pkg_preinst() {
 		echo
 		echo "64-bit system detected - Configuring"
 		echo 
-		echo "alias optirun32='vglrun -ld /usr/lib32/nvidia-current'
-		alias optirun64='vglrun -ld /usr/lib64/nvidia'" >> /etc/bash/bashrc
+		echo "alias optirun32='vglrun -ld /usr/lib32'
+		alias optirun64='vglrun -ld /usr/lib64'" >> /etc/bash/bashrc
 	elif [ "$ARCH" = "i686" ]; then
 		echo
 		echo "32-bit system detected - Configuring"
 		echo
-		echo "alias optirun='vglrun -ld /usr/lib/nvidia-current'" >> /etc/bash/bashrc
+		echo "alias optirun='vglrun -ld /usr/lib'" >> /etc/bash/bashrc
 	fi
 
 	echo '#!/bin/sh' > /usr/bin/vglclient-service
