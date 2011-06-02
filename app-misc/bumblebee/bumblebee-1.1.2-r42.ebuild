@@ -5,7 +5,7 @@
 EAPI="4"
 
 DESCRIPTION="Bumblebee, the right hand of Optimus-Prime :)"
-HOMEPAGE="git://github.com/iegor/bumblebee-Gentoo-support.git"
+HOMEPAGE="https://github.com/MrMEEE/bumblebee"
 LICENSE="BEER-WARE"
 CATEGORY="app-misc"
 

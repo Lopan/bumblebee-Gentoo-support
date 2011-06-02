@@ -16,6 +16,19 @@ ${LAYMAN_BUMBLEBEE_DIR}/files/opt, etc. :), tried to left everything as author i
 
 Layman_files folder contains all I did to make layman see/work with my ebuild.
 
+INSTALLATION:
+Here is what could be done to install this ebuild.
+You need to copy info from "layman_files/insert_into_cache.xml" to "/var/lib/layman/cache_***.xml" file.
+That will make possible to do next
+sudo layman -a(--add) bumblebee
+from your terminal.
+
+! ATTENTION ! :
+I did not yet set up configuring mechanism for selecting compress mode or monitor connection mode in ebuild.
+They are hard coded in ebuild to my own configuration (N61JV CRT-0 and XV).
+So if you have troubles with launching it, please correct those values for your own configuration.
+In nearest feauture I will fix that issue, but for now it is bug that I don't know how to fix.
+
 For future plans:
 Of course run and test.
 maybe create another ebuild for VirtualGL_amd64.deb (if it doesn't exist already).
