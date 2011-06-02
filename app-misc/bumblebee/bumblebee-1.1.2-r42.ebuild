@@ -160,7 +160,7 @@ pkg_preinst() {
 
 	insinto /etc/X11
 	newins "${FILESDIR}/etc/X11/xorg.conf.intel" xorg.conf || die
-	newins "${FILESDIR}/etc/X11/xorg.conf.nvidia" || die
+	doins "${FILESDIR}/etc/X11/xorg.conf.nvidia" || die
 	# cp ${FILESDIR}/etc/X11/xorg.conf.intel /etc/X11/xorg.conf
 	# cp ${FILESDIR}/etc/X11/xorg.conf.nvidia /etc/X11/
 
