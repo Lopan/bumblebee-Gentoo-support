@@ -28,6 +28,8 @@ pkg_setup() {
 
 	ewarn "THIS SCRIPT MUST BE RUN WITH SUDO"
 
+	echo "[  ${WORKDIR}  ]"
+
 	mkdir -p /etc/bumblebee/configs_backup
 	CONF_BACKUP_DIR=/etc/bumblebee/configs_backup
 

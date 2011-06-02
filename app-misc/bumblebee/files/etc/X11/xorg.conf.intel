@@ -46,7 +46,7 @@ Section "InputDevice"
     Driver         "kbd"
 EndSection
 
-Section "Monitor"                                                       
+Section "Monitor"
     Identifier "Monitor0"
     VendorName     "Unknown"
     ModelName      "Unknown"
