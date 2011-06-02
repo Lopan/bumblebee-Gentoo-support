@@ -31,4 +31,4 @@ fi
 # optirun64 glxgears
 #/usr/bin/uxterm
 # vglrun -ld /usr/lib/ -d :1 /usr/bin/uxterm -bg grey -fn 7x14 -maximized
-vglrun -ld /usr/lib/ -d :1  glxgears
+vglrun -ld /usr/lib32/ -c rgb -d :1  glxgears

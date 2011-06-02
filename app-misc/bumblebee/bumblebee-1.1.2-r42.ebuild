@@ -6,12 +6,14 @@ EAPI="4"
 
 DESCRIPTION="Bumblebee, the right hand of Optimus-Prime :)"
 HOMEPAGE="https://github.com/MrMEEE/bumblebee"
-LICENSE="BEER-WARE"
-CATEGORY="app-misc"
+# SRC_URI="./bumblebee-1.1.2.tar.gz"
 
+LICENSE="BEER-WARE"
 SLOT="0"
 KEYWORDS="amd64"
 IUSE="nvidia"
+
+CATEGORY="app-misc"
 
 MERGE_TYPE="binary"
 
@@ -20,10 +22,14 @@ DEPEND="x11-drivers/nvidia-drivers
 #	sys-libs/libselinux"
 RDEPEND="${DEPEND}"
 
-# SRC_URI="./bumblebee-1.1.2.tar.gz"
 
 pkg_setup() {
 	einfo "<> pkg_setup()"
+
+	ewarn "THIS SCRIPT MUST BE RUN WITH SUDO"
+
+	mkdir -p /etc/bumblebee/configs_backup
+	CONF_BACKUP_DIR=/etc/bumblebee/configs_backup
 
 	ROOT_UID=0
 
@@ -56,31 +62,57 @@ pkg_setup() {
 	fi
 
 	echo
+	echo "Welcome to the bumblebee installation v.1.1.2"
+	echo "Licensed under BEER-WARE License and GPL"
 	echo
-	einfo "Welcome to the bumblebee installation v.1.1.2"
-	einfo "Licensed under BEER-WARE License and GPL"
+	echo "This will enable you to utilize both your Intel and nVidia card"
 	echo
-	einfo "This will enable you to utilize both your Intel and nVidia card"
-	echo
-	einfo "Please note that this script will only work with 64-bit Debian Based machines"
-	einfo "and has only been tested on Ubuntu Natty 11.04 but should work on others as well"
-	einfo "from version v1.1 support for 32-bit Ubuntu has been added"
-	einfo "I will add support for RPM-based distributions later.. or somebody else might..."
-	einfo "Remember... This is OpenSource :D"
-	echo
-	ewarn "THIS SCRIPT MUST BE RUN WITH SUDO"
-	echo
+	echo "Please note that this script will only work with 64-bit Debian Based machines"
+	echo "and has only been tested on Ubuntu Natty 11.04 but should work on others as well"
+	echo "from version v1.1 support for 32-bit Ubuntu has been added"
+	echo "I will add support for RPM-based distributions later.. or somebody else might..."
+	echo "Remember... This is OpenSource :D"
 	echo
 
 	# Back up configuration
 	einfo "Backing up your Configuration"
 	if [ `cat /etc/bash/bashrc |grep VGL |wc -l` -ne 0 ]; then
-		cp /etc/bash/bashrc.optiorig /etc/bash/bashrc
+		cp "${CONF_BACKUP_DIR}"/bashrc.optiorig /etc/bash/bashrc
 	fi
-	cp -n /etc/bash/bashrc /etc/bash/bashrc.optiorig
-	cp -n /etc/modprobe.d/blacklist.conf /etc/modprobe.d/blacklist.conf.optiorig
-	cp -n /etc/conf.d/modules /etc/conf.d/modules.optiorig
-	cp -n /etc/X11/xorg.conf /etc/X11/xorg.conf.optiorig
+	cp -n /etc/bash/bashrc "${CONF_BACKUP_DIR}"/bashrc.optiorig
+	cp -n /etc/modprobe.d/blacklist.conf "${CONF_BACKUP_DIR}"/blacklist.conf.optiorig
+	cp -n /etc/conf.d/modules "${CONF_BACKUP_DIR}"/modules.optiorig
+	cp -n /etc/X11/xorg.conf "${CONF_BACKUP_DIR}"/xorg.conf.optiorig
+
+	# To remember: when will putting back those configs need to put them in their directories
+	# This will become needed when will write uninstal routine.
+	# ${CONF_BACKUP_DIR}/bashrc.optiorig		/etc/bash/bashrc
+	# ${CONF_BACKUP_DIR}/blacklist.conf.optiorig	/etc/modprobe.d/blacklist.conf
+	# ${CONF_BACKUP_DIR}/modules.optiorig		/etc/conf.d/modules
+	# ${CONF_BACKUP_DIR}/xorg.conf.optiorig		/etc/X11/xorg.conf
+
+	# Setting up Evironment variables
+	#
+	# "The Image Transport is how the images are transferred from the"
+	# "nVidia card to the Intel card, people has different experiences of"
+	# "performance, but just select the default if you are in doubt."
+	#
+	# "I recently found out that yuv and jpeg both has some lagging"
+	# "this is only noticable in fast moving games, such as 1st person"
+	# "shooters and for me, its only good enough with xv, even though"
+	# "xv sets down performance a little bit."
+	#
+	# "1) YUV"
+	# "2) JPEG"
+	# "3) PROXY"
+	# "4) XV (default)"
+	# "5) RGB"
+
+	IMAGETRANSPORT="xv"
+
+	# Setting monitor connection type
+
+	CONNECTEDMONITOR="CRT-0"
 
 	# Install prerequisites: (handled by dependencies)
 	# echo "Installing needed packages"
@@ -125,8 +157,12 @@ pkg_preinst() {
 
 	echo
 	einfo "Installing Optimus Configuration and files"
-	cp ${FILESDIR}/etc/X11/xorg.conf.intel /etc/X11/xorg.conf
-	cp ${FILESDIR}/etc/X11/xorg.conf.nvidia /etc/X11/
+
+	insinto /etc/X11
+	newins "${FILESDIR}/etc/X11/xorg.conf.intel" xorg.conf || die
+	newins "${FILESDIR}/etc/X11/xorg.conf.nvidia" || die
+	# cp ${FILESDIR}/etc/X11/xorg.conf.intel /etc/X11/xorg.conf
+	# cp ${FILESDIR}/etc/X11/xorg.conf.nvidia /etc/X11/
 
 	rm -rf /etc/X11/xdm-optimus
 	cp -a ${FILESDIR}/etc/X11/xdm-optimus /etc/X11/
@@ -138,6 +174,8 @@ pkg_preinst() {
 	cp ${FILESDIR}/etc/modprobe.d/virtualgl.conf /etc/modprobe.d/
 	cp ${FILESDIR}/usr/local/bin/optimusXserver /usr/local/bin/
 
+	# Conducting "installation" of VGL, probably will be replaced in future by some
+	# existent ebuilds
 	if [ "$ARCH" = "x86_64" ]; then
 		cp ${FILESDIR}/usr/bin/xdm-optimus-64.bin /usr/bin/xdm-optimus
 		# dpkg -i install-files/VirtualGL_amd64.deb
@@ -228,9 +266,6 @@ pkg_preinst() {
 
 	sed -i 's/REPLACEWITHBUSID/'$INTELBUSID'/g' /etc/X11/xorg.conf
 	sed -i 's/REPLACEWITHBUSID/'$NVIDIABUSID'/g' /etc/X11/xorg.conf.nvidia
-
-	CONNECTEDMONITOR="CRT-0"
-
 	# Setting output device to: $CONNECTEDMONITOR
 	sed -i 's/REPLACEWITHCONNECTEDMONITOR/'$CONNECTEDMONITOR'/g' /etc/X11/xorg.conf.nvidia
 
@@ -239,25 +274,6 @@ pkg_preinst() {
 	einfo "Enabling Optimus Service"
 	# update-rc.d xdm-optimus defaults
 	/etc/init.d/xdm-optimus start
-
-	einfo "Setting up Evironment variables"
-	echo
-	echo "The Image Transport is how the images are transferred from the"
-	echo "nVidia card to the Intel card, people has different experiences of"
-	echo "performance, but just select the default if you are in doubt."
-	echo 
-	echo "I recently found out that yuv and jpeg both has some lagging"
-	echo "this is only noticable in fast moving games, such as 1st person"
-	echo "shooters and for me, its only good enough with xv, even though"
-	echo "xv sets down performance a little bit."
-	echo
-	echo "1) YUV"  
-	echo "2) JPEG"     
-	echo "3) PROXY"
-	echo "4) XV (default)"
-	echo "5) RGB"
-
-	IMAGETRANSPORT="xv"
 
 	echo "VGL_DISPLAY=:1" >> /etc/bash/bashrc
 	echo "export VGL_DISPLAY" >> /etc/bash/bashrc
@@ -292,7 +308,7 @@ pkg_preinst() {
 
 	echo
 	echo
-	einfo "Ok... Installation complete."
+	echo "Ok... Installation complete."
 	echo
 	echo "Now you need to make sure that the command \"vglclient -gl\" is run after your Desktop Enviroment is started"
 	echo

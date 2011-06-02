@@ -30,6 +30,7 @@ So if you have troubles with launching it, please correct those values for your 
 In nearest feauture I will fix that issue, but for now it is bug that I don't know how to fix.
 
 For future plans:
+Re-design mechanism for backin up configuration files, so it uses Gentoo backing up and merging configuration files (etc-update). To stop polluting config dirs.
 Of course run and test.
 maybe create another ebuild for VirtualGL_amd64.deb (if it doesn't exist already).
 x86 install

@@ -22,7 +22,7 @@
 # HEED_DEFAULT_DISPLAY_MANAGER to "false."
 # Also overridable from command line like:
 # HEED_DEFAULT_DISPLAY_MANAGER=false /etc/init.d/xdm start
-[ -z "$HEED_DEFAULT_DISPLAY_MANAGER" ] && HEED_DEFAULT_DISPLAY_MANAGER=true
+[ -z "${HEED_DEFAULT_DISPLAY_MANAGER}" ] && HEED_DEFAULT_DISPLAY_MANAGER=true
 
 depend() {
 	# need localmount xdm-setup
@@ -54,7 +54,7 @@ depend() {
 #}
 
 start() {
-	ebegin "Starting X display manager xdm-optimus"
+	echo "Starting X display manager xdm-optimus"
 
 	# [ checkconfig = 0 ] || return 1;
 	if [ -f ${PIDFILE} ]; then
@@ -63,20 +63,20 @@ start() {
 	fi
 	
 	LD_LIBRARY_PATH=/usr/lib64/
-	start-stop-daemon --start --quiet $SSD_START_ARGS -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
-	eend ${?}
+	start-stop-daemon --start --quiet ${SSD_START_ARGS} -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
+	# eend ${?}
 	return 0
 }
 
 stop() {
-	ebegin "Stopping X display manager"
+	echo "Stopping X display manager"
 
 	if ! [ -f ${PIDFILE} ]; then
-		ewarn "Not running ($PIDFILE not found)"
+		ewarn "Not running (${PIDFILE} not found)"
 	else
-		start-stop-daemon --stop --quiet $SSD_STOP_ARGS
+		start-stop-daemon --stop --quiet ${SSD_STOP_ARGS}
 		SSD_RES=$?
-		if [ $SSD_RES -eq 1 ]; then
+		if [ ${SSD_RES} -eq 1 ]; then
 			einfo "not running"
 			if [ -f ${PIDFILE} ]; then
 				einfo "removing stale ${PIDFILE}"
@@ -85,6 +85,6 @@ stop() {
 		fi
 	fi
 
-	eend ${?}
+	# eend ${?}
 	return 0
 }
