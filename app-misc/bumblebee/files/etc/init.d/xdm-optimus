@@ -57,10 +57,10 @@ start() {
 	echo "Starting X display manager xdm-optimus"
 
 	# [ checkconfig = 0 ] || return 1;
-	if [ -f ${PIDFILE} ]; then
-		ewarn "Already running"
-		return 1
-	fi	
+	# if [ -f ${PIDFILE} ]; then
+	#	ewarn "Already running"
+	#	return 1
+	# fi
 	LD_LIBRARY_PATH=/usr/lib64/ start-stop-daemon --start --quiet ${SSD_START_ARGS} -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
 	# eend ${?}
 	# return 0
@@ -70,7 +70,7 @@ stop() {
 	echo "Stopping X display manager"
 
 	if ! [ -f ${PIDFILE} ]; then
-		ewarn "Not running (${PIDFILE} not found)"
+		echo "Not running (${PIDFILE} not found)"
 	else
 		start-stop-daemon --stop --quiet ${SSD_STOP_ARGS}
 		SSD_RES=$?
