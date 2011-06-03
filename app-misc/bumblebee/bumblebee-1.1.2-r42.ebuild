@@ -28,7 +28,8 @@ pkg_setup() {
 
 	ewarn "THIS SCRIPT MUST BE RUN WITH SUDO"
 
-	echo "[  ${WORKDIR}  ]"
+	# /var/tmp/portage/app-misc/bumblebee-1.1.2-r42/work
+	# echo "[  ${WORKDIR}  ]"
 
 	mkdir -p /etc/bumblebee/configs_backup
 	CONF_BACKUP_DIR=/etc/bumblebee/configs_backup
@@ -109,12 +110,14 @@ pkg_setup() {
 	# "3) PROXY"
 	# "4) XV (default)"
 	# "5) RGB"
-
 	IMAGETRANSPORT="xv"
 
 	# Setting monitor connection type
-
 	CONNECTEDMONITOR="CRT-0"
+
+	# determinig bus ids for our cards
+	INTELBUSID=`echo "PCI:"\`lspci |grep VGA |grep Intel |cut -f1 -d:\`":"\`lspci |grep VGA |grep Intel |cut -f2 -d: |cut -f1 -d.\`":"\`lspci |grep VGA |grep Intel |cut -f2 -d. |cut -f1 -d" "\``
+	NVIDIABUSID=`echo "PCI:"\`lspci |grep VGA |grep nVidia |cut -f1 -d:\`":"\`lspci |grep VGA |grep nVidia |cut -f2 -d: |cut -f1 -d.\`":"\`lspci |grep VGA |grep nVidia |cut -f2 -d. |cut -f1 -d" "\``
 
 	# Install prerequisites: (handled by dependencies)
 	# echo "Installing needed packages"
@@ -160,6 +163,16 @@ pkg_preinst() {
 	echo
 	einfo "Installing Optimus Configuration and files"
 
+	#fix to issue with using etc-update to merge configs as user wants to
+	cp ${FILESDIR}/etc/X11/xorg.conf.intel "${WORKDIR}"/etc/X11/
+	cp ${FILESDIR}/etc/X11/xorg.conf.nvidia "${WORKDIR}"/etc/X11/
+	
+	sed -i 's/REPLACEWITHBUSID/'${INTELBUSID}'/g'	"${WORKDIR}"/etc/X11/xorg.conf.intel
+	sed -i 's/REPLACEWITHBUSID/'${NVIDIABUSID}'/g'	"${WORKDIR}"/etc/X11/xorg.conf.nvidia
+	# Setting output device to: CONNECTEDMONITOR variable
+	sed -i 's/REPLACEWITHCONNECTEDMONITOR/'${CONNECTEDMONITOR}'/g' /etc/X11/xorg.conf.nvidia
+
+	# now install modified config files into /etc/X11
 	insinto /etc/X11
 	newins "${FILESDIR}/etc/X11/xorg.conf.intel" xorg.conf || die
 	doins "${FILESDIR}/etc/X11/xorg.conf.nvidia" || die
@@ -178,7 +191,7 @@ pkg_preinst() {
 
 	# Conducting "installation" of VGL, probably will be replaced in future by some
 	# existent ebuilds
-	if [ "$ARCH" = "x86_64" ]; then
+	if [ "${ARCH}" = "x86_64" ]; then
 		cp ${FILESDIR}/usr/bin/xdm-optimus-64.bin /usr/bin/xdm-optimus
 		# dpkg -i install-files/VirtualGL_amd64.deb
 		# Install VirtualGL package (manually this time)
@@ -230,7 +243,7 @@ pkg_preinst() {
 
 		cp -a ${FILESDIR}/usr/share/doc/VirtualGL-2.2.2	/usr/share/doc/
 		ln -s /usr/share/doc/VirtualGL-2.2.2	/opt/VirtualGL/doc		
-	elif [ "$ARCH" = "i686" ]; then
+	elif [ "${ARCH}" = "i686" ]; then
 		einfo "i686 found"
 		# cp files/usr/bin/xdm-optimus-32.bin /usr/bin/xdm-optimus
 		# dpkg -i install-files/VirtualGL_i386.deb
@@ -260,18 +273,9 @@ pkg_preinst() {
 	modprobe -r nouveau
 	modprobe nvidia
 
-	INTELBUSID=`echo "PCI:"\`lspci |grep VGA |grep Intel |cut -f1 -d:\`":"\`lspci |grep VGA |grep Intel |cut -f2 -d: |cut -f1 -d.\`":"\`lspci |grep VGA |grep Intel |cut -f2 -d. |cut -f1 -d" "\``
-	NVIDIABUSID=`echo "PCI:"\`lspci |grep VGA |grep nVidia |cut -f1 -d:\`":"\`lspci |grep VGA |grep nVidia |cut -f2 -d: |cut -f1 -d.\`":"\`lspci |grep VGA |grep nVidia |cut -f2 -d. |cut -f1 -d" "\``
+	# echo
+	# einfo "Changing Configuration to match your Machine"
 
-	echo
-	einfo "Changing Configuration to match your Machine"
-
-	sed -i 's/REPLACEWITHBUSID/'$INTELBUSID'/g' /etc/X11/xorg.conf
-	sed -i 's/REPLACEWITHBUSID/'$NVIDIABUSID'/g' /etc/X11/xorg.conf.nvidia
-	# Setting output device to: $CONNECTEDMONITOR
-	sed -i 's/REPLACEWITHCONNECTEDMONITOR/'$CONNECTEDMONITOR'/g' /etc/X11/xorg.conf.nvidia
-
-	echo
 	echo
 	einfo "Enabling Optimus Service"
 	# update-rc.d xdm-optimus defaults
@@ -279,18 +283,18 @@ pkg_preinst() {
 
 	echo "VGL_DISPLAY=:1" >> /etc/bash/bashrc
 	echo "export VGL_DISPLAY" >> /etc/bash/bashrc
-	echo "VGL_COMPRESS=$IMAGETRANSPORT" >> /etc/bash/bashrc
+	echo "VGL_COMPRESS=${IMAGETRANSPORT}" >> /etc/bash/bashrc
 	echo "export VGL_COMPRESS" >> /etc/bash/bashrc
 	echo "VGL_READBACK=fbo" >> /etc/bash/bashrc
 	echo "export VGL_READBACK" >> /etc/bash/bashrc
 
-	if [ "$ARCH" = "x86_64" ]; then
+	if [ "${ARCH}" = "x86_64" ]; then
 		echo
 		echo "64-bit system detected - Configuring"
 		echo 
 		echo "alias optirun32='vglrun -ld /usr/lib32'
 		alias optirun64='vglrun -ld /usr/lib64'" >> /etc/bash/bashrc
-	elif [ "$ARCH" = "i686" ]; then
+	elif [ "${ARCH}" = "i686" ]; then
 		echo
 		echo "32-bit system detected - Configuring"
 		echo
@@ -301,11 +305,11 @@ pkg_preinst() {
 	echo 'vglclient -gl' >> /usr/bin/vglclient-service
 	chmod +x /usr/bin/vglclient-service
 
-	if [ -d $HOME/.kde/Autostart ]; then
-		if [ -f $HOME/.kde/Autostart/vlgclient-service ]; then
-			rm $HOME/.kde/Autostart/vglclient-service
+	if [ -d ${HOME}/.kde/Autostart ]; then
+		if [ -f ${HOME}/.kde/Autostart/vlgclient-service ]; then
+			rm ${HOME}/.kde/Autostart/vglclient-service
 		fi
-		ln -s /usr/bin/vglclient-service $HOME/.kde/Autostart/vglclient-service
+		ln -s /usr/bin/vglclient-service ${HOME}/.kde/Autostart/vglclient-service
 	fi
 
 	echo
@@ -318,11 +322,11 @@ pkg_preinst() {
 	echo
 	echo "In GNOME this is done by placing a shortcut in ~/.config/autostart/ or using the Adminstration->Sessions GUI"
 	echo
-	if [ "$ARCH" = "x86_64" ]; then
+	if [ "${ARCH}" = "x86_64" ]; then
 		echo "After that you should be able to start applications with \"optirun32 <application>\" or \"optirun64 <application>\""
 		echo "optirun32 can be used for legacy 32-bit applications and Wine Games.. Everything else should work on optirun64"
 		echo "But... if one doesn't work... try the other"
-	elif [ "$ARCH" = "i686" ]; then
+	elif [ "${ARCH}" = "i686" ]; then
 		echo "After that you should be able to start applications with \"optirun <application>\"."
 	fi
 	echo
