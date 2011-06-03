@@ -274,12 +274,9 @@ pkg_preinst() {
 	modprobe nvidia
 
 	# echo
-	# einfo "Changing Configuration to match your Machine"
-
-	echo
-	einfo "Enabling Optimus Service"
+	# einfo "Enabling Optimus Service"
 	# update-rc.d xdm-optimus defaults
-	/etc/init.d/xdm-optimus start
+	# /etc/init.d/xdm-optimus start
 
 	echo "VGL_DISPLAY=:1" >> /etc/bash/bashrc
 	echo "export VGL_DISPLAY" >> /etc/bash/bashrc

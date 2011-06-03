@@ -1,5 +1,3 @@
 #!/bin/sh
-#
-
-
-. /etc/X11/Xsession
+# . /etc/X11/Xsession
+. /etc/X11/Sessions/dwm
