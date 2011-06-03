@@ -63,7 +63,7 @@ Section "Device"
 EndSection
 
 Section "Screen"
-    Identifier     "Screen0"   
+    Identifier     "Screen0"
     Device         "Device0"
     Monitor        "Monitor0"
     DefaultDepth    24

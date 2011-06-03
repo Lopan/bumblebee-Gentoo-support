@@ -28,7 +28,7 @@ fi
 
 # export LD_PRELOAD=/usr/lib64/.so
 
-# optirun64 glxgears
+optirun64 glxgears
 #/usr/bin/uxterm
 # vglrun -ld /usr/lib/ -d :1 /usr/bin/uxterm -bg grey -fn 7x14 -maximized
-vglrun -ld /usr/lib64/ -c xv -d :1  glxgears
+# vglrun -ld /usr/lib64/ -c xv -d :1  glxgears
