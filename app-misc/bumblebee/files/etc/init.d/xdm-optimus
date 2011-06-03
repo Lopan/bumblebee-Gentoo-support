@@ -60,12 +60,10 @@ start() {
 	if [ -f ${PIDFILE} ]; then
 		ewarn "Already running"
 		return 1
-	fi
-	
-	LD_LIBRARY_PATH=/usr/lib64/
-	start-stop-daemon --start --quiet ${SSD_START_ARGS} -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
+	fi	
+	LD_LIBRARY_PATH=/usr/lib64/ start-stop-daemon --start --quiet ${SSD_START_ARGS} -- -config /etc/X11/xdm-optimus/xdm-config || echo "already running"
 	# eend ${?}
-	return 0
+	# return 0
 }
 
 stop() {
@@ -86,5 +84,5 @@ stop() {
 	fi
 
 	# eend ${?}
-	return 0
+	# return 0
 }
