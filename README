@@ -23,6 +23,12 @@ That will make possible to do next
 sudo layman -a(--add) bumblebee
 from your terminal.
 
+TESTING:
+Added some simple scripts for testing purposes.
+They are in ./test_bumblebee dir.
+To conduct test please try to login from other tty (I use F6 usualy) and run test_bumblebee.sh from that tty.
+It supposed to open another X session and try to run glxgears
+
 ! ATTENTION ! :
 I did not yet set up configuring mechanism for selecting compress mode or monitor connection mode in ebuild.
 They are hard coded in ebuild to my own configuration (N61JV CRT-0 and XV).
